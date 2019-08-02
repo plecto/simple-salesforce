@@ -47,11 +47,6 @@ class RequestBase(object):
         self.session = session or requests.Session()
         self.session_id = "sessionId"
         self.name = ""
-        self.headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + self.session_id,
-            'X-PrettyPrint': '1'
-        }
 
     def call_salesforce(self, method, url, timeout=60, **kwargs):
         """Utility method for performing HTTP call to Salesforce.
@@ -65,7 +60,11 @@ class RequestBase(object):
 
         Returns a `requests.result` object.
         """
-        headers = self.headers.copy()
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + self.session_id,
+            'X-PrettyPrint': '1'
+        }
         additional_headers = kwargs.pop('headers', dict())
         headers.update(additional_headers or dict())
         result = self.session.request(method=method, url=url, headers=headers,
