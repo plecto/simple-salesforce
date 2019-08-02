@@ -262,7 +262,7 @@ class Salesforce(RequestBase):
 
         return SFType(
             name, self.session_id, self.sf_instance, sf_version=self.sf_version,
-            proxies=self.proxies, session=self.session)
+            proxies=self.proxies, session=self.session, headers=self.headers)
 
     # User utlity methods
     def set_password(self, user, password, **kwargs):
