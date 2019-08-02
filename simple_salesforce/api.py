@@ -66,6 +66,7 @@ class RequestBase(object):
             'X-PrettyPrint': '1'
         }
         additional_headers = kwargs.pop('headers', dict())
+        headers.update(self.headers or dict())
         headers.update(additional_headers or dict())
         result = self.session.request(method=method, url=url, headers=headers,
                                       timeout=timeout, **kwargs)
@@ -108,7 +109,7 @@ class Salesforce(RequestBase):
             self, username=None, password=None, security_token=None,
             session_id=None, instance=None, instance_url=None,
             organizationId=None, sandbox=False, version=DEFAULT_API_VERSION,
-            proxies=None, session=None, client_id=None):
+            proxies=None, session=None, client_id=None, headers=None):
         """Initialize the instance with the given parameters.
 
         Available kwargs
@@ -148,6 +149,7 @@ class Salesforce(RequestBase):
         self.sf_version = version
         self.sandbox = sandbox
         self.proxies = self.session.proxies
+        self.headers = headers
         # override custom session proxies dance
         if proxies is not None:
             if not session:
@@ -505,7 +507,7 @@ class SFType(RequestBase):
     # pylint: disable=too-many-arguments
     def __init__(
             self, object_name, session_id, sf_instance,
-            sf_version=DEFAULT_API_VERSION, proxies=None, session=None):
+            sf_version=DEFAULT_API_VERSION, proxies=None, session=None, headers=None):
         """Initialize the instance with the given parameters.
 
         Arguments:
@@ -523,6 +525,7 @@ class SFType(RequestBase):
         super(SFType, self).__init__(session=session)
         self.session_id = session_id
         self.name = object_name
+        self.headers = headers
         # don't wipe out original proxies with None
         if not session and proxies is not None:
             self.session.proxies = proxies
